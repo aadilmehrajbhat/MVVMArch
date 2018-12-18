@@ -50,14 +50,14 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
 
 
     public void setData(List<Item> itemList){
-        itemList=mItemList;
+        mItemList = itemList;
         notifyDataSetChanged();
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder{
 
         TextView title;
-        TextView description;
+            TextView description;
         ImageView imageView;
 
         public MainViewHolder(@NonNull View itemView) {

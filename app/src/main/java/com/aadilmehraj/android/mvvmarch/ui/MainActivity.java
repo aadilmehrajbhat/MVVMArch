@@ -4,14 +4,15 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-
-import com.aadilmehraj.android.mvvmarch.MainListAdapter;
+import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MainListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+        DividerItemDecoration divider = new DividerItemDecoration(this,
+            DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(divider);
+
         initViewModel();
     }
 
@@ -50,11 +55,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Model model) {
                 // Data loaded
-                Log.i(TAG, "Data loaded: " + model);
-                mLoadingBar.setVisibility(View.GONE);
-                mAdapter.setData(model.getItems());
+                if (model != null) {
+                    Log.i(TAG, "Data loaded: " + model);
+                    mLoadingBar.setVisibility(View.GONE);
+                    mAdapter.setData(model.getItems());
 
-
+                    ActionBar actionBar = getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setTitle(model.getTitle());
+                    }
+                }
             }
         });
     }

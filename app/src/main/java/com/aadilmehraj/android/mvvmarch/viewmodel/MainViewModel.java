@@ -2,7 +2,6 @@ package com.aadilmehraj.android.mvvmarch.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
@@ -14,8 +13,7 @@ public class MainViewModel extends ViewModel {
     private Application mAppContext;
     private MainRepository mMainRepository;
 
-    private MutableLiveData<Model> mItemListLive = new MutableLiveData<>();
-    private MediatorLiveData<Model> mMediatorLiveData = new MediatorLiveData<>();
+    private MutableLiveData<Model> mItemListLive;
 
     public MainViewModel(Application appContext, MainRepository mainRepository) {
         mAppContext = appContext;

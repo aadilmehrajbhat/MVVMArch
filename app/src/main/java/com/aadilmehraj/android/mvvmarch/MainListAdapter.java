@@ -57,7 +57,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
     public class MainViewHolder extends RecyclerView.ViewHolder{
 
         TextView title;
-            TextView description;
+        TextView description;
         ImageView imageView;
 
         public MainViewHolder(@NonNull View itemView) {

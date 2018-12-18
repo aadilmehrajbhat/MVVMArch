@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "987861707905",
+    "firebase_url": "https://mvvmarch.firebaseio.com",
+    "project_id": "mvvmarch",
+    "storage_bucket": "mvvmarch.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987861707905:android:9b408a9e592bdef7",
+        "android_client_info": {
+          "package_name": "com.aadilmehraj.android.mvvmarch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987861707905-373jjgum0224p55dtsbrp1mgd5ctik4b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aadilmehraj.android.mvvmarch",
+            "certificate_hash": "0af8dc22cbc4ec48941e31cca01284d1703938e5"
+          }
+        },
+        {
+          "client_id": "987861707905-2s2f9k54tbhhshd3pttdr1obt505s7jt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxMa6xZtFlkP5VfeGkvEY1A5XmXiixRlw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987861707905-2s2f9k54tbhhshd3pttdr1obt505s7jt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

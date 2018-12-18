@@ -5,7 +5,13 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import com.aadilmehraj.android.mvvmarch.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
@@ -17,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private MainViewModel mViewModel;
+    private RecyclerView mRecyclerView;
+    private MainListAdapter mAdapter;
+    private ProgressBar mLoadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +35,13 @@ public class MainActivity extends AppCompatActivity {
         MainRepository mainRepository = MainRepository.getInstance(getApplication());
         MainViewModelFactory factory = new MainViewModelFactory(getApplication(), mainRepository);
         mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mLoadingBar = findViewById(R.id.loading_bar);
 
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new MainListAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
         initViewModel();
     }
 
@@ -36,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(@Nullable Model model) {
                 // Data loaded
                 Log.i(TAG, "Data loaded: " + model);
+                mLoadingBar.setVisibility(View.GONE);
+                mAdapter.setData(model.getItems());
+
 
             }
         });

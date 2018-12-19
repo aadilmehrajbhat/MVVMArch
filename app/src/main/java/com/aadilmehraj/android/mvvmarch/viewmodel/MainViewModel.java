@@ -15,7 +15,6 @@ public class MainViewModel extends ViewModel {
     private MainRepository mMainRepository;
 
     private MutableLiveData<Model> mItemListLive = new MutableLiveData<>();
-    private MediatorLiveData<Model> mMediatorLiveData = new MediatorLiveData<>();
 
     public MainViewModel(Application appContext, MainRepository mainRepository) {
         mAppContext = appContext;

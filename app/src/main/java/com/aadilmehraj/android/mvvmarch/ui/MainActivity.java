@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
@@ -65,6 +66,14 @@ public class MainActivity extends AppCompatActivity {
                         actionBar.setTitle(model.getTitle());
                     }
                 }
+            }
+        });
+
+        mViewModel.getErrorLive().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String errorMsg) {
+                mLoadingBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Error: " + errorMsg, Toast.LENGTH_SHORT).show();
             }
         });
     }

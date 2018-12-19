@@ -8,7 +8,6 @@ import com.aadilmehraj.android.mvvmarch.service.model.Item;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -21,14 +20,17 @@ public class MainRepository {
     private static MainRepository INSTANCE;
     private static Application mAppContext;
 
-    private MainRepository() {
+    private MutableLiveData<String> mErrorLive;
 
+    private MainRepository() {
+        mErrorLive = new MutableLiveData<>();
     }
 
     public static MainRepository getInstance(Application appContext) {
         if (INSTANCE == null) {
             INSTANCE = new MainRepository();
             mAppContext = appContext;
+
         }
         return INSTANCE;
     }
@@ -64,7 +66,7 @@ public class MainRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw new DatabaseException(databaseError.getMessage());
+                mErrorLive.setValue(databaseError.getMessage());
             }
 
         });
@@ -72,4 +74,8 @@ public class MainRepository {
         return mutableLiveData;
     }
 
+
+    public LiveData<String> getErrorLive() {
+        return mErrorLive;
+    }
 }

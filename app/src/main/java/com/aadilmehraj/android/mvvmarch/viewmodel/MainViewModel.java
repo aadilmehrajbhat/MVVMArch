@@ -14,12 +14,14 @@ public class MainViewModel extends ViewModel {
     private MainRepository mMainRepository;
 
     private MutableLiveData<Model> mItemListLive;
+    private LiveData<String> mErrorLive;
 
     public MainViewModel(Application appContext, MainRepository mainRepository) {
         mAppContext = appContext;
         mMainRepository = mainRepository;
 
         fetchData();
+        mErrorLive = mainRepository.getErrorLive();
     }
 
     /**
@@ -32,5 +34,9 @@ public class MainViewModel extends ViewModel {
 
     public LiveData<Model> getItemListLive() {
         return mItemListLive;
+    }
+
+    public LiveData<String> getErrorLive() {
+        return mErrorLive;
     }
 }

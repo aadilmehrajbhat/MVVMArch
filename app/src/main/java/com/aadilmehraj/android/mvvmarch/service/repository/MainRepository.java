@@ -91,10 +91,8 @@ public class MainRepository {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 ArrayList<Category> categories = new ArrayList<>();
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Category category = new Category();
-
                     String categoryId = (String) snapshot.child("cat_id").getValue();
                     String id = (String) snapshot.child("id").getValue();
                     String title = (String) snapshot.child("title").getValue();

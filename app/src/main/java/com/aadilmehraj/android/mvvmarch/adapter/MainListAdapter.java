@@ -1,4 +1,4 @@
-package com.aadilmehraj.android.mvvmarch;
+package com.aadilmehraj.android.mvvmarch.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.service.model.Item;
-import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -62,9 +62,9 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
 
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
-            title=itemView.findViewById(R.id.titletextview);
-            description=itemView.findViewById(R.id.descriptiontv);
-            imageView=itemView.findViewById(R.id.item_imageview);
+            title=itemView.findViewById(R.id.title_tv);
+            description=itemView.findViewById(R.id.description_tv);
+            imageView=itemView.findViewById(R.id.item_iv);
         }
 
         void bind(Item item){

@@ -70,8 +70,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView=inflater.inflate(R.layout.list_group_header,null);
         }
+
         TextView mTitle=convertView.findViewById(R.id.lblListHeader);
         ImageView mImageView=convertView.findViewById(R.id.img_res);
+        ImageView mIndicator=convertView.findViewById(R.id.img_indicator);
+        int imageres=isExpanded?R.drawable.ic_expand_less_black_24dp:R.drawable.ic_expand_more_black_24dp;
+        mIndicator.setImageResource(imageres);
         Glide.with(context).load(category.getUrl()).into(mImageView);
         mTitle.setText(category.getTitle());
 
@@ -88,6 +92,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView childtitle=convertView.findViewById(R.id.lblListItem);
         childtitle.setText(item.getTitle());
+        ImageView mImageView=convertView.findViewById(R.id.img_res);
+        Glide.with(context).load(item.getUrl()).into(mImageView);
         return convertView;
     }
 

@@ -18,11 +18,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.aadilmehraj.android.mvvmarch.adapter.ExpandableListAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
+import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
 import com.aadilmehraj.android.mvvmarch.viewmodel.MainViewModel;
@@ -38,11 +42,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView mRecyclerView;
     private MainListAdapter mAdapter;
     private ProgressBar mLoadingBar;
-
+    private ExpandableListView mExpandableListView;
+    int lastpostion=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mExpandableListView=findViewById(R.id.expandableListView);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -71,6 +77,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mRecyclerView.addItemDecoration(divider);
 
         initViewModel();
+        initExpandable();
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+              //  Toast.makeText(getApplicationContext(),)
+                return false;
+            }
+        });
+        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                    CategoryItem mCategory= (CategoryItem) parent.getExpandableListAdapter().getChild(groupPosition,childPosition);
+                    Toast.makeText(getApplicationContext(),mCategory.getTitle(),Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+        mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if(lastpostion!=-1 && lastpostion!=groupPosition)
+                {
+                    mExpandableListView.collapseGroup(lastpostion);
+                }
+                lastpostion=groupPosition;
+            }
+        });
+    }
+
+    private void initExpandable() {
+        ExpandableListAdapter  mExpandableListAdapter=new ExpandableListAdapter(MainActivity.this,mViewModel.getCategories());
+        mExpandableListView.setAdapter(mExpandableListAdapter);
+
     }
 
 
@@ -129,4 +167,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
 
     }
+
 }

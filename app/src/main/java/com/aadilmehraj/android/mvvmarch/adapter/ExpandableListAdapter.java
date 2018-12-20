@@ -13,10 +13,10 @@ import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
+
     private Context context;
     private List<Category> categoryList;
 
@@ -32,7 +32,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        List<CategoryItem> categoryItems=categoryList.get(groupPosition).getCategoryItems();
+        List<CategoryItem> categoryItems = categoryList.get(groupPosition).getCategoryItems();
         return categoryItems.size();
     }
 
@@ -43,7 +43,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        List<CategoryItem> categoryItemList=categoryList.get(groupPosition).getCategoryItems();
+        List<CategoryItem> categoryItemList = categoryList.get(groupPosition).getCategoryItems();
         return categoryItemList.get(childPosition);
     }
 
@@ -63,36 +63,40 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        Category category= (Category) getGroup(groupPosition);
-        if(convertView==null)
-        {
-            LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView=inflater.inflate(R.layout.list_group_header,null);
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
+        ViewGroup parent) {
+        Category category = (Category) getGroup(groupPosition);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_group_header, parent, false);
         }
 
-        TextView mTitle=convertView.findViewById(R.id.lblListHeader);
-        ImageView mImageView=convertView.findViewById(R.id.img_res);
-        ImageView mIndicator=convertView.findViewById(R.id.img_indicator);
-        int imageres=isExpanded?R.drawable.ic_expand_less_black_24dp:R.drawable.ic_expand_more_black_24dp;
-        mIndicator.setImageResource(imageres);
-        Glide.with(context).load(category.getUrl()).into(mImageView);
-        mTitle.setText(category.getTitle());
+        TextView textView = convertView.findViewById(R.id.group_header_label);
+        ImageView imageView = convertView.findViewById(R.id.group_head_iv);
+        ImageView indicator = convertView.findViewById(R.id.group_header_indicator);
+        indicator.setImageResource(
+            (isExpanded) ? R.drawable.ic_expand_less_black_24dp
+                : R.drawable.ic_expand_more_black_24dp
+        );
+        Glide.with(context).load(category.getUrl()).into(imageView);
+        textView.setText(category.getTitle());
 
         return convertView;
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        CategoryItem item= (CategoryItem) getChild(groupPosition,childPosition);
-        if(convertView==null)
-        {
-            LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView=inflater.inflate(R.layout.list_group_child,null);
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
+        View convertView, ViewGroup parent) {
+        CategoryItem item = (CategoryItem) getChild(groupPosition, childPosition);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_group_child, null);
         }
-        TextView childtitle=convertView.findViewById(R.id.lblListItem);
-        childtitle.setText(item.getTitle());
-        ImageView mImageView=convertView.findViewById(R.id.img_res);
+        TextView titleTextView = convertView.findViewById(R.id.group_child_label_tv);
+        titleTextView.setText(item.getTitle());
+        ImageView mImageView = convertView.findViewById(R.id.group_child_iv);
         Glide.with(context).load(item.getUrl()).into(mImageView);
         return convertView;
     }

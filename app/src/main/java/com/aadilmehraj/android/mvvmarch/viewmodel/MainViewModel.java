@@ -16,7 +16,7 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Model> mItemListLive;
     private LiveData<String> mErrorLive;
 
-    public MainViewModel(Application appContext, MainRepository mainRepository) {
+    public  MainViewModel(Application appContext, MainRepository mainRepository) {
         mAppContext = appContext;
         mMainRepository = mainRepository;
 

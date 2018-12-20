@@ -34,8 +34,6 @@ public class MainRepository {
         }
         return INSTANCE;
     }
-
-
     /**
      * Queries {@link FirebaseDatabase} for the {@link Model} data.
      *
@@ -50,7 +48,6 @@ public class MainRepository {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Model model = new Model();
                 ArrayList<Item> items = new ArrayList<>();
-
                 String title = (String) dataSnapshot.child("title").getValue();
 
                 for (DataSnapshot snapshot : dataSnapshot.child("items").getChildren()) {

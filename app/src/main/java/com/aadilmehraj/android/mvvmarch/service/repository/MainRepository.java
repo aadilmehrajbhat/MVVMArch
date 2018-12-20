@@ -64,6 +64,7 @@ public class MainRepository {
 
                 model.setTitle(title);
                 model.setItems(items);
+                Log.i(TAG, "List load: " + model);
                 mutableLiveData.postValue(model);
                 query.removeEventListener(this);
             }
@@ -118,7 +119,7 @@ public class MainRepository {
                 }
 
                 Log.i(TAG, "Categories: " + categories);
-                categoriesLive.setValue(categories);
+                categoriesLive.postValue(categories);
             }
 
             @Override

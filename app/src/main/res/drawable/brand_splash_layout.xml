@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item>
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+      android:shape="rectangle">
+      <gradient
+        android:angle="45"
+        android:endColor="#EF4C2C"
+        android:startColor="#ED295D"
+        android:type="linear" />
+      <corners android:radius="0dp" />
+    </shape>
+  </item>
+
+  <item>
+    <bitmap
+      android:src="@drawable/ic_pattern"
+      android:tileMode="repeat" />
+  </item>
+
+
+</layer-list>

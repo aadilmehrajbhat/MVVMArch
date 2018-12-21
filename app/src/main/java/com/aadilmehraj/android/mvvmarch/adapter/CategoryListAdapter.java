@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.bumptech.glide.Glide;
-
-import java.util.List;
 
 public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder> {
 
@@ -22,9 +19,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private Context mContext;
     private Category mcategory;
 
-    public CategoryListAdapter(Context mContext, Category mcategory) {
+    public CategoryListAdapter(Context mContext) {
         this.mContext = mContext;
-        this.mcategory = mcategory;
     }
 
     @NonNull

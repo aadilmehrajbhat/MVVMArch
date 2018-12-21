@@ -5,32 +5,33 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.aadilmehraj.android.mvvmarch.R;
+import com.aadilmehraj.android.mvvmarch.adapter.CategoryItemAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.ExpandableListAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.PagerAdapter;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
+import com.aadilmehraj.android.mvvmarch.service.model.Item;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
 import com.aadilmehraj.android.mvvmarch.viewmodel.MainViewModel;
@@ -94,17 +95,33 @@ public class MainActivity extends AppCompatActivity {
     private void initExpandable() {
         final ExpandableListView expandableListView = findViewById(R.id.expandableListView);
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
+        RecyclerView expandRecyclerView = findViewById(R.id.expand_recycler_view);
+        final CategoryItemAdapter adapter = new CategoryItemAdapter(this);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
-                int childPosition, long id) {
+                int childPosition, final long id) {
                 CategoryItem mCategory = (CategoryItem) parent.getExpandableListAdapter()
                     .getChild(groupPosition, childPosition);
                 Toast.makeText(getApplicationContext(), mCategory.getTitle(), Toast.LENGTH_SHORT)
                     .show();
+                mLoadingBar.setVisibility(View.VISIBLE);
+                drawerLayout.closeDrawer(Gravity.START);
+                adapter.setData(null);
+                mViewModel.fetchItems(mCategory.getId());
+                mViewModel.getItemsLive().observe(MainActivity.this, new Observer<List<Item>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Item> items) {
+                        Log.i(TAG, "Items loaded: " + items);
+                        mLoadingBar.setVisibility(View.GONE);
+                        adapter.setData(items);
+                    }
+                });
+
                 return true;
             }
         });
@@ -124,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
 
-
-
+        expandRecyclerView.setAdapter(adapter);
+        expandRecyclerView.setLayoutManager(layoutManager);
     }
 
 
@@ -159,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 if (model != null) {
                     Log.i(TAG, "Data loaded: " + model);
                     mLoadingBar.setVisibility(View.GONE);
-                    mAdapter.setData(model.getItems());
+                    mAdapter.setData(model.getModelItems());
 
                     ActionBar actionBar = getSupportActionBar();
                     if (actionBar != null) {

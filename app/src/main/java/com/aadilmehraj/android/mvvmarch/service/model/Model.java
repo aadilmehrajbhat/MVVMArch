@@ -5,14 +5,14 @@ import java.util.List;
 public class Model {
 
     private String mTitle;
-    private List<Item> mItems;
+    private List<ModelItem> mModelItems;
 
     public Model() {
     }
 
-    public Model(String title, List<Item> items) {
+    public Model(String title, List<ModelItem> modelItems) {
         mTitle = title;
-        mItems = items;
+        mModelItems = modelItems;
     }
 
     public String getTitle() {
@@ -23,19 +23,19 @@ public class Model {
         mTitle = title;
     }
 
-    public List<Item> getItems() {
-        return mItems;
+    public List<ModelItem> getModelItems() {
+        return mModelItems;
     }
 
-    public void setItems(List<Item> items) {
-        mItems = items;
+    public void setModelItems(List<ModelItem> modelItems) {
+        mModelItems = modelItems;
     }
 
     @Override
     public String toString() {
         return "Model{" +
             "mTitle='" + mTitle + '\'' +
-            ", mItems=" + mItems +
+            ", mModelItems=" + mModelItems +
             '}';
     }
 }

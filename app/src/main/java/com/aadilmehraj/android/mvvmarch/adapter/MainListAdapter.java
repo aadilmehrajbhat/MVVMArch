@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aadilmehraj.android.mvvmarch.R;
-import com.aadilmehraj.android.mvvmarch.service.model.Item;
+import com.aadilmehraj.android.mvvmarch.service.model.ModelItem;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
 
 
     private Context mContext;
-    private List<Item> mItemList;
+    private List<ModelItem> mModelItemList;
 
     public MainListAdapter(Context mContext) {
         this.mContext = mContext;
@@ -35,22 +35,22 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int i) {
 
-        Item item = mItemList.get(i);
-        holder.bind(item);
+        ModelItem modelItem = mModelItemList.get(i);
+        holder.bind(modelItem);
     }
 
 
     @Override
     public int getItemCount() {
-        if (mItemList != null){
-            return mItemList.size();
+        if (mModelItemList != null){
+            return mModelItemList.size();
         }
         return 0;
     }
 
 
-    public void setData(List<Item> itemList){
-        mItemList = itemList;
+    public void setData(List<ModelItem> modelItemList){
+        mModelItemList = modelItemList;
         notifyDataSetChanged();
     }
 
@@ -67,10 +67,10 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainVi
             imageView=itemView.findViewById(R.id.item_iv);
         }
 
-        void bind(Item item){
-            title.setText(item.getTitle());
-            description.setText(item.getDescription());
-            Glide.with(mContext).load(item.getUrl()).into(imageView);
+        void bind(ModelItem modelItem){
+            title.setText(modelItem.getTitle());
+            description.setText(modelItem.getDescription());
+            Glide.with(mContext).load(modelItem.getUrl()).into(imageView);
 
         }
     }

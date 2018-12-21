@@ -9,15 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.adapter.CategoryListAdapter;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
-import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class CategoryListFragment extends Fragment {
 
@@ -40,9 +34,9 @@ public class CategoryListFragment extends Fragment {
         mrecyclerView = view.findViewById(R.id.categoryRecyclerView);
         mrecyclerView.setHasFixedSize(true);
         mrecyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        adapter = new CategoryListAdapter(getContext(),categoryList.getCategoryItems());
-        adapter.setCategories(categoryList);
-        mrecyclerView.setAdapter(adapter);
+//        adapter = new CategoryListAdapter(getContext(),categoryList.getCategoryItems());
+//        adapter.setCategories(categoryList);
+//        mrecyclerView.setAdapter(adapter);
 
 
         return view;

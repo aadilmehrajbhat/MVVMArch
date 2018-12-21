@@ -7,6 +7,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.Nullable;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
+import com.aadilmehraj.android.mvvmarch.service.model.Item;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,11 +19,9 @@ public class MainViewModel extends ViewModel {
     private Application mAppContext;
     private MainRepository mMainRepository;
 
-
-
-
     private MediatorLiveData<Model> mItemListLive = new MediatorLiveData<>();
     private MediatorLiveData<List<Category>> mCategoryListLive = new MediatorLiveData<>();
+    private MediatorLiveData<List<Item>> mItemsLive = new MediatorLiveData();
     private LiveData<String> mErrorLive;
 
     private ArrayList<Category> mCategories;
@@ -61,6 +60,18 @@ public class MainViewModel extends ViewModel {
             });
     }
 
+    public void fetchItems(String itemId) {
+        final LiveData<List<Item>> modelLiveData = mMainRepository.queryItems(itemId);
+
+        mItemsLive.addSource(modelLiveData, new Observer<List<Item>>() {
+            @Override
+            public void onChanged(@Nullable List<Item> items) {
+                mItemsLive.removeSource(modelLiveData);
+                mItemsLive.setValue(items);
+            }
+        });
+    }
+
 
     public void setCategoryList(List<Category> categories) {
         mCategories = (ArrayList<Category>) categories;
@@ -81,5 +92,9 @@ public class MainViewModel extends ViewModel {
 
     public ArrayList<Category> getCategories() {
         return mCategories;
+    }
+
+    public LiveData<List<Item>> getItemsLive() {
+        return mItemsLive;
     }
 }

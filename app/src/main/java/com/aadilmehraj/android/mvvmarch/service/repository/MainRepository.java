@@ -8,6 +8,7 @@ import android.util.Log;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.aadilmehraj.android.mvvmarch.service.model.Item;
+import com.aadilmehraj.android.mvvmarch.service.model.ModelItem;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +39,7 @@ public class MainRepository {
         }
         return INSTANCE;
     }
+
     /**
      * Queries {@link FirebaseDatabase} for the {@link Model} data.
      *
@@ -51,18 +53,55 @@ public class MainRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Model model = new Model();
-                ArrayList<Item> items = new ArrayList<>();
+                ArrayList<ModelItem> modelItems = new ArrayList<>();
                 String title = (String) dataSnapshot.child("title").getValue();
 
-                for (DataSnapshot snapshot : dataSnapshot.child("items").getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.child("modelItems").getChildren()) {
+                    ModelItem modelItem = snapshot.getValue(ModelItem.class);
+                    modelItems.add(modelItem);
+                }
+
+                model.setTitle(title);
+                model.setModelItems(modelItems);
+                Log.i(TAG, "List load: " + model);
+                mutableLiveData.postValue(model);
+                query.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                mErrorLive.setValue(databaseError.getMessage());
+            }
+
+        });
+
+        return mutableLiveData;
+    }
+
+
+    /**
+     * Queries {@link FirebaseDatabase} for the {@link Item} data.
+     *
+     * @return {@link LiveData<Item>} to observe data
+     */
+    public LiveData<List<Item>> queryItems(String itemId) {
+        final Query query = FirebaseDatabase.getInstance().getReference().child("items")
+            .orderByChild("cat_id").equalTo(itemId);
+        final MutableLiveData<List<Item>> mutableLiveData = new MutableLiveData<>();
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                ArrayList<Item> items = new ArrayList<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Item item = snapshot.getValue(Item.class);
                     items.add(item);
                 }
 
-                model.setTitle(title);
-                model.setItems(items);
-                Log.i(TAG, "List load: " + model);
-                mutableLiveData.postValue(model);
+                Log.i(TAG, "List load: " + items);
+                mutableLiveData.postValue(items);
                 query.removeEventListener(this);
             }
 

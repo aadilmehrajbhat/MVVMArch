@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <ImageView
+    android:id="@+id/group_child_iv"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:adjustViewBounds="true"
+    android:layout_marginStart="42dp"
+    android:scaleType="fitCenter"
+    android:layout_gravity="center_vertical"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    tools:src="@tools:sample/backgrounds/scenic" />
+
+  <TextView
+    android:id="@+id/group_child_label_tv"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toEndOf="@+id/group_child_iv"
+    app:layout_constraintTop_toTopOf="@+id/group_child_iv"
+    app:layout_constraintBottom_toBottomOf="@+id/group_child_iv"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:paddingStart="16dp"
+    android:maxLines="1"
+    android:ellipsize="end"
+    android:textSize="16sp"
+    android:paddingEnd="16dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+    tools:text="Headphones"
+    />
+
+</android.support.constraint.ConstraintLayout>

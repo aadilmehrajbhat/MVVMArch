@@ -6,18 +6,25 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.R;
+import com.aadilmehraj.android.mvvmarch.adapter.ExpandableListAdapter;
+import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
+import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
 import com.aadilmehraj.android.mvvmarch.viewmodel.MainViewModel;
@@ -39,11 +46,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
         Intent intent = getIntent();
         if (intent == null || !intent.hasExtra(SplashActivity.EXTRA_CATEGORY)) {
             throw new IllegalArgumentException("Categories Argument not found");
         }
-        ArrayList<Category> categories = intent.getParcelableArrayListExtra(SplashActivity.EXTRA_CATEGORY);
+        ArrayList<Category> categories = intent
+            .getParcelableArrayListExtra(SplashActivity.EXTRA_CATEGORY);
 
         MainRepository mainRepository = MainRepository.getInstance(getApplication());
         MainViewModelFactory factory = new MainViewModelFactory(getApplication(), mainRepository);
@@ -62,6 +73,41 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.addItemDecoration(divider);
 
         initViewModel();
+        initExpandable();
+
+    }
+
+    private void initExpandable() {
+        final ExpandableListView expandableListView = findViewById(R.id.expandableListView);
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
+                int childPosition, long id) {
+                CategoryItem mCategory = (CategoryItem) parent.getExpandableListAdapter()
+                    .getChild(groupPosition, childPosition);
+                Toast.makeText(getApplicationContext(), mCategory.getTitle(), Toast.LENGTH_SHORT)
+                    .show();
+                return true;
+            }
+        });
+
+        ExpandableListAdapter mExpandableListAdapter = new ExpandableListAdapter(MainActivity.this,
+            mViewModel.getCategories());
+        expandableListView.setAdapter(mExpandableListAdapter);
+
+        // Configure navigation drawer
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        );
+
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
 
@@ -102,5 +148,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

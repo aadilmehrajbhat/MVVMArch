@@ -5,9 +5,14 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +28,7 @@ import android.widget.Toast;
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.adapter.ExpandableListAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
+import com.aadilmehraj.android.mvvmarch.adapter.PagerAdapter;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
@@ -40,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MainListAdapter mAdapter;
     private ProgressBar mLoadingBar;
+    private TabLayout mTabLayout;
+    private PagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Category> categories = intent
             .getParcelableArrayListExtra(SplashActivity.EXTRA_CATEGORY);
 
+
         MainRepository mainRepository = MainRepository.getInstance(getApplication());
         MainViewModelFactory factory = new MainViewModelFactory(getApplication(), mainRepository);
         mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
@@ -63,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mLoadingBar = findViewById(R.id.loading_bar);
+        mTabLayout =  findViewById(R.id.tabLayout);
+        mViewPager = findViewById(R.id.viewPager);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -73,8 +86,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.addItemDecoration(divider);
 
         initViewModel();
-        initExpandable();
 
+        initExpandable();
+        setUpTabLayout();
     }
 
     private void initExpandable() {
@@ -108,6 +122,29 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+
+
+
+    }
+
+
+
+    private void setUpTabLayout() {
+
+        mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+
+        List<Category> categories= mViewModel.getCategories();
+        for (int i=0;i<categories.size();i++){
+            String tabTitle= categories.get(i).getTitle();
+            mPagerAdapter.addFragment(new CategoryListFragment(),tabTitle);
+            Log.d("test",categories.get(i).getTitle());
+
+                  }
+
+        mViewPager.setAdapter(mPagerAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+
     }
 
 

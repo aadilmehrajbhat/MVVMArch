@@ -50,7 +50,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/main_list_item" />
 
-      <ProgressBar
+
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="4dp"
+        app:tabMode="scrollable"
+        app:tabTextColor="#000000">
+
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteY="16dp">
+
+    </android.support.v4.view.ViewPager>
+
+
+    <ProgressBar
         android:id="@+id/loading_bar"
         android:layout_width="42dp"
         android:layout_height="42dp"

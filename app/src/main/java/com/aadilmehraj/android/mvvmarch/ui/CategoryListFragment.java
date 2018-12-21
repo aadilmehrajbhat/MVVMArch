@@ -28,6 +28,8 @@ public class CategoryListFragment extends Fragment {
 
     RecyclerView mrecyclerView;
     private CategoryListAdapter adapter;
+    CategoryItem category;
+   // Category category;
 
 
     public CategoryListFragment() {
@@ -35,17 +37,24 @@ public class CategoryListFragment extends Fragment {
 
     }
 
+    public  static CategoryListFragment newInstance(Category category){
+        CategoryListFragment categoryListFragment= new CategoryListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CATEGORY,category);
+        categoryListFragment.setArguments(bundle);
+        return categoryListFragment;
+    }
+
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.category_list_fragment,container,false);
 
 
-        Bundle extras = getActivity().getIntent().getExtras();
-
-        Log.d(EXTRA_CATEGORY,CategoryListFragment.EXTRA_CATEGORY);
-
-        Category category = extras.getParcelable(CategoryListFragment.EXTRA_CATEGORY);
+        Bundle bundle = getArguments();
+       Category category =  bundle.getParcelable(EXTRA_CATEGORY);
 
 
 

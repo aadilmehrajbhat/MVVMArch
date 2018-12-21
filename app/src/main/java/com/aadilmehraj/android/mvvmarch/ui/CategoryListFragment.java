@@ -1,11 +1,13 @@
 package com.aadilmehraj.android.mvvmarch.ui;
 
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +24,14 @@ import java.util.Objects;
 public class CategoryListFragment extends Fragment {
 
 
+    public static final String EXTRA_CATEGORY = "Extra categoory";
+
     RecyclerView mrecyclerView;
-    Category categoryList;
     private CategoryListAdapter adapter;
 
 
     public CategoryListFragment() {
+
 
     }
 
@@ -37,11 +41,19 @@ public class CategoryListFragment extends Fragment {
         View view= inflater.inflate(R.layout.category_list_fragment,container,false);
 
 
+        Bundle extras = getActivity().getIntent().getExtras();
+
+        Log.d(EXTRA_CATEGORY,CategoryListFragment.EXTRA_CATEGORY);
+
+        Category category = extras.getParcelable(CategoryListFragment.EXTRA_CATEGORY);
+
+
+
         mrecyclerView = view.findViewById(R.id.categoryRecyclerView);
         mrecyclerView.setHasFixedSize(true);
         mrecyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        adapter = new CategoryListAdapter(getContext(),categoryList.getCategoryItems());
-        adapter.setCategories(categoryList);
+        adapter = new CategoryListAdapter(getContext());
+        adapter.setCategories(category);
         mrecyclerView.setAdapter(adapter);
 
 

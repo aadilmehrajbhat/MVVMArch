@@ -22,9 +22,9 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private Context mContext;
     private Category mcategory;
 
-    public CategoryListAdapter(Context mContext, Category mcategory) {
+    public CategoryListAdapter(Context mContext) {
         this.mContext = mContext;
-        this.mcategory = mcategory;
+
     }
 
     @NonNull

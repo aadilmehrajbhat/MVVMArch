@@ -154,7 +154,17 @@ public class MainActivity extends AppCompatActivity {
         List<Category> categories= mViewModel.getCategories();
         for (int i=0;i<categories.size();i++){
             String tabTitle= categories.get(i).getTitle();
-            mPagerAdapter.addFragment(new CategoryListFragment(),tabTitle);
+
+           // Bundle bundle=new Bundle();
+
+          //  bundle.putString(CategoryListFragment.EXTRA_CATEGORY,"hello how r u");
+           // bundle.putParcelable(CategoryListFragment.EXTRA_CATEGORY,categories.get(i).getCategoryItems().get(0));
+            CategoryListFragment fragment=CategoryListFragment.newInstance(categories.get(i));
+
+            //bundle.putInt(CategoryListFragment.EXTRA_CATEGORY,i);
+           // fragment.setArguments(bundle);
+
+            mPagerAdapter.addFragment(fragment,tabTitle);
             Log.d("test",categories.get(i).getTitle());
 
                   }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    app:statusBarBackground="@color/colorPrimaryDark"
+    android:layout_height="match_parent">
+
+
+      <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:fitsSystemWindows="false"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+          android:id="@+id/main_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="?android:attr/actionBarSize"
+          android:theme="@style/AppTheme.AppBarOverlay" />
+
+      </android.support.design.widget.AppBarLayout>
+
+
+      <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_height="match_parent">
+
+
+      </android.support.constraint.ConstraintLayout>
+
+<android.support.v4.widget.DrawerLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:id="@+id/drawer_layout"
+  android:fitsSystemWindows="true"
+  android:layout_marginTop="?android:attr/actionBarSize"
+  android:layout_gravity="start">
+    <android.support.design.widget.NavigationView
+      android:id="@+id/nav_view"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_gravity="start"
+      android:fitsSystemWindows="false"
+      android:layout_marginTop="?android:attr/actionBarSize"
+      app:headerLayout="@null"
+      app:menu="@null">
+
+      <ExpandableListView
+        android:id="@+id/expandable_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:dividerHeight="0dp"
+        android:groupIndicator="@null" />
+
+    </android.support.design.widget.NavigationView>
+</android.support.v4.widget.DrawerLayout>
+
+  </android.support.design.widget.CoordinatorLayout>
+</layout>

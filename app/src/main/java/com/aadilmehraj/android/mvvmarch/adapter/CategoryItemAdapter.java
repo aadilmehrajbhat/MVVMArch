@@ -17,10 +17,16 @@ import java.util.List;
 public class CategoryItemAdapter extends RecyclerView.Adapter<ItemAdapterViewHolder> {
 
     private Context mContext;
+    private OnItemClickListener mClickListener;
     private List<Item> mItems;
 
-    public CategoryItemAdapter(Context context) {
+    public interface OnItemClickListener {
+        void onItemClick(Item item);
+    }
+
+    public CategoryItemAdapter(Context context, OnItemClickListener onItemClickListener) {
         mContext = context;
+        mClickListener =onItemClickListener;
     }
 
     @NonNull
@@ -41,7 +47,7 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<ItemAdapterViewHol
         return (mItems != null) ? mItems.size() : 0;
     }
 
-    class ItemAdapterViewHolder extends RecyclerView.ViewHolder {
+    class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView mTitleTv;
         ImageView mThumbnailIv;
@@ -50,12 +56,18 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<ItemAdapterViewHol
             super(itemView);
             mTitleTv = itemView.findViewById(R.id.category_name);
             mThumbnailIv = itemView.findViewById(R.id.category_imageView);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Item item) {
 
             mTitleTv.setText(item.getTitle());
             Glide.with(mContext).load(item.getUrl()).into(mThumbnailIv);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mClickListener.onItemClick(mItems.get(getAdapterPosition()));
         }
     }
 

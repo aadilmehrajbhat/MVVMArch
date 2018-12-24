@@ -13,58 +13,73 @@ import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.bumptech.glide.Glide;
 
-public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder> {
+public class CategoryListAdapter extends
+    RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder> {
 
+    public interface OnItemClickListener {
+
+        void onItemClick(CategoryItem categoryItem);
+    }
 
     private Context mContext;
-    private Category mcategory;
+    private Category mCategory;
+    private OnItemClickListener mClickListener;
 
-    public CategoryListAdapter(Context mContext) {
+    public CategoryListAdapter(Context mContext, OnItemClickListener onItemClickListener) {
         this.mContext = mContext;
+        mClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.main_category_list_item,viewGroup,false);
+        View view = LayoutInflater.from(mContext)
+            .inflate(R.layout.main_category_list_item, viewGroup, false);
         return new CategoryViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int i) {
 
-        CategoryItem categoryItem= mcategory.getCategoryItems().get(i);
+        CategoryItem categoryItem = mCategory.getCategoryItems().get(i);
         holder.bind(categoryItem);
-
-
     }
 
     @Override
     public int getItemCount() {
-        if (mcategory!=null){
-            return mcategory.getCategoryItems().size();
+        if (mCategory != null) {
+            return mCategory.getCategoryItems().size();
         }
         return 0;
     }
-    public void setCategories(Category categories){
-        mcategory=categories;
+
+    public void setCategories(Category categories) {
+        mCategory = categories;
         notifyDataSetChanged();
     }
 
-    public class CategoryViewHolder extends RecyclerView.ViewHolder{
+    public class CategoryViewHolder extends RecyclerView.ViewHolder implements
+        View.OnClickListener {
 
-        TextView mcategoryName;
-        ImageView mcategoryImage;
+        TextView mCategoryName;
+        ImageView mCategoryImage;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            mcategoryName = itemView.findViewById(R.id.category_name);
-            mcategoryImage = itemView.findViewById(R.id.category_imageView);
+            mCategoryName = itemView.findViewById(R.id.category_name);
+            mCategoryImage = itemView.findViewById(R.id.category_imageView);
+            itemView.setOnClickListener(this);
 
         }
-        void bind(CategoryItem item){
-            mcategoryName.setText(item.getTitle());
-            Glide.with(mContext).load(item.getUrl()).into(mcategoryImage);
+
+        void bind(CategoryItem item) {
+            mCategoryName.setText(item.getTitle());
+            Glide.with(mContext).load(item.getUrl()).into(mCategoryImage);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mClickListener.onItemClick(mCategory.getCategoryItems().get(getAdapterPosition()));
         }
     }
 }

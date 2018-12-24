@@ -4,44 +4,48 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.aadilmehraj.android.mvvmarch.R;
-import com.aadilmehraj.android.mvvmarch.adapter.CategoryItemAdapter;
+import com.aadilmehraj.android.mvvmarch.adapter.DetailActivity;
 import com.aadilmehraj.android.mvvmarch.adapter.ExpandableListAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.MainListAdapter;
 import com.aadilmehraj.android.mvvmarch.adapter.PagerAdapter;
+import com.aadilmehraj.android.mvvmarch.databinding.ActivityMainDrawerBinding;
+import com.aadilmehraj.android.mvvmarch.databinding.ActivityMainViewPagerBinding;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 import com.aadilmehraj.android.mvvmarch.service.model.Item;
 import com.aadilmehraj.android.mvvmarch.service.model.Model;
 import com.aadilmehraj.android.mvvmarch.service.repository.MainRepository;
+import com.aadilmehraj.android.mvvmarch.ui.CategoryListFragment.OnCategoryClickListener;
+import com.aadilmehraj.android.mvvmarch.ui.ItemListFragment.OnItemClickListener;
 import com.aadilmehraj.android.mvvmarch.viewmodel.MainViewModel;
 import com.aadilmehraj.android.mvvmarch.viewmodel.MainViewModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnCategoryClickListener,
+    OnItemClickListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private ActivityMainDrawerBinding mDrawerBinding;
+
+    private ActivityMainViewPagerBinding mViewPagerBinding;
 
     private MainViewModel mViewModel;
     private RecyclerView mRecyclerView;
@@ -55,10 +59,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
+//        mDrawerBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_drawer);
+//        setSupportActionBar(mDrawerBinding.mainToolbar);
+
+        mViewPagerBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_view_pager);
+        setSupportActionBar(mViewPagerBinding.mainToolbar);
 
         Intent intent = getIntent();
         if (intent == null || !intent.hasExtra(SplashActivity.EXTRA_CATEGORY)) {
@@ -67,60 +73,64 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Category> categories = intent
             .getParcelableArrayListExtra(SplashActivity.EXTRA_CATEGORY);
 
-
         MainRepository mainRepository = MainRepository.getInstance(getApplication());
         MainViewModelFactory factory = new MainViewModelFactory(getApplication(), mainRepository);
         mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
         mViewModel.setCategoryList(categories);
 
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mLoadingBar = findViewById(R.id.loading_bar);
-        mTabLayout =  findViewById(R.id.tabLayout);
-        mViewPager = findViewById(R.id.viewPager);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MainListAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
-        DividerItemDecoration divider = new DividerItemDecoration(this,
-            DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(divider);
-
+//        mRecyclerView = findViewById(R.id.recyclerView);
+//        mLoadingBar = findViewById(R.id.loading_bar);
+//        mTabLayout = findViewById(R.id.tabLayout);
+//        mViewPager = findViewById(R.id.viewPager);
+//
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        mAdapter = new MainListAdapter(this);
+//        mRecyclerView.setAdapter(mAdapter);
+//        DividerItemDecoration divider = new DividerItemDecoration(this,
+//            DividerItemDecoration.VERTICAL);
+//        mRecyclerView.addItemDecoration(divider);
+//
         initViewModel();
 
-        initExpandable();
         setUpTabLayout();
+//        initExpandable();
     }
 
     private void initExpandable() {
-        final ExpandableListView expandableListView = findViewById(R.id.expandableListView);
 
-        final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
-        RecyclerView expandRecyclerView = findViewById(R.id.expand_recycler_view);
-        final CategoryItemAdapter adapter = new CategoryItemAdapter(this);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        assert mDrawerBinding != null;
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            this, mDrawerBinding.drawerLayout, mDrawerBinding.mainToolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        );
 
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        mDrawerBinding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+
+        mDrawerBinding.expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                 int childPosition, final long id) {
-                CategoryItem mCategory = (CategoryItem) parent.getExpandableListAdapter()
-                    .getChild(groupPosition, childPosition);
-                Toast.makeText(getApplicationContext(), mCategory.getTitle(), Toast.LENGTH_SHORT)
-                    .show();
-                mLoadingBar.setVisibility(View.VISIBLE);
-                drawerLayout.closeDrawer(Gravity.START);
-                adapter.setData(null);
-                mViewModel.fetchItems(mCategory.getId());
-                mViewModel.getItemsLive().observe(MainActivity.this, new Observer<List<Item>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Item> items) {
-                        Log.i(TAG, "Items loaded: " + items);
-                        mLoadingBar.setVisibility(View.GONE);
-                        adapter.setData(items);
-                    }
-                });
+//                CategoryItem mCategory = (CategoryItem) parent.getExpandableListAdapter()
+//                    .getChild(groupPosition, childPosition);
+//                Toast.makeText(getApplicationContext(), mCategory.getTitle(), Toast.LENGTH_SHORT)
+//                    .show();
+//                mLoadingBar.setVisibility(View.VISIBLE);
+//                drawerLayout.closeDrawer(Gravity.START);
+//                adapter.setData(null);
+//                mViewModel.fetchItems(mCategory.getId());
+//                mViewModel.getItemsLive().observe(MainActivity.this, new Observer<List<Item>>() {
+//                    @Override
+//                    public void onChanged(@Nullable List<Item> items) {
+//                        Log.i(TAG, "Items loaded: " + items);
+//                        mLoadingBar.setVisibility(View.GONE);
+//                        adapter.setData(items);
+//                    }
+//                });
 
                 return true;
             }
@@ -128,49 +138,24 @@ public class MainActivity extends AppCompatActivity {
 
         ExpandableListAdapter mExpandableListAdapter = new ExpandableListAdapter(MainActivity.this,
             mViewModel.getCategories());
-        expandableListView.setAdapter(mExpandableListAdapter);
+        mDrawerBinding.expandableListView.setAdapter(mExpandableListAdapter);
 
-        // Configure navigation drawer
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        );
-
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-
-        expandRecyclerView.setAdapter(adapter);
-        expandRecyclerView.setLayoutManager(layoutManager);
     }
-
 
 
     private void setUpTabLayout() {
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
 
-        List<Category> categories= mViewModel.getCategories();
-        for (int i=0;i<categories.size();i++){
-            String tabTitle= categories.get(i).getTitle();
+        List<Category> categories = mViewModel.getCategories();
+        for (int i = 0; i < categories.size(); i++) {
+            String tabTitle = categories.get(i).getTitle();
+            CategoryListFragment fragment = CategoryListFragment.newInstance(categories.get(i));
+            mPagerAdapter.addFragment(fragment, tabTitle);
+        }
 
-           // Bundle bundle=new Bundle();
-
-          //  bundle.putString(CategoryListFragment.EXTRA_CATEGORY,"hello how r u");
-           // bundle.putParcelable(CategoryListFragment.EXTRA_CATEGORY,categories.get(i).getCategoryItems().get(0));
-            CategoryListFragment fragment=CategoryListFragment.newInstance(categories.get(i));
-
-            //bundle.putInt(CategoryListFragment.EXTRA_CATEGORY,i);
-           // fragment.setArguments(bundle);
-
-            mPagerAdapter.addFragment(fragment,tabTitle);
-            Log.d("test",categories.get(i).getTitle());
-
-                  }
-
-        mViewPager.setAdapter(mPagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+        mViewPagerBinding.categoryViewPager.setAdapter(mPagerAdapter);
+        mViewPagerBinding.tabLayout.setupWithViewPager(mViewPagerBinding.categoryViewPager);
 
     }
 
@@ -185,8 +170,6 @@ public class MainActivity extends AppCompatActivity {
                 // Data loaded
                 if (model != null) {
                     Log.i(TAG, "Data loaded: " + model);
-                    mLoadingBar.setVisibility(View.GONE);
-                    mAdapter.setData(model.getModelItems());
 
                     ActionBar actionBar = getSupportActionBar();
                     if (actionBar != null) {
@@ -200,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Category> categories) {
                 Log.i(TAG, "Categories loaded: " + categories);
-                mLoadingBar.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this, "Categories loaded", Toast.LENGTH_SHORT).show();
             }
         });
@@ -208,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.getErrorLive().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String errorMsg) {
-                mLoadingBar.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
             }
         });
@@ -216,11 +197,51 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+
+        Log.e(TAG, "Back-stack count: " + getSupportFragmentManager().getBackStackEntryCount());
+
+        if (mViewPagerBinding != null && getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            showViewPager();
+        }
+        if ((mDrawerBinding != null) && (mDrawerBinding.drawerLayout.isDrawerOpen(GravityCompat.START))) {
+            mDrawerBinding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void showViewPager() {
+        mViewPagerBinding.categoryViewPager.setVisibility(View.VISIBLE);
+        mViewPagerBinding.tabLayout.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public void onCategoryClick(CategoryItem categoryItem) {
+        mViewPagerBinding.categoryViewPager.setVisibility(View.GONE);
+        mViewPagerBinding.tabLayout.setVisibility(View.GONE);
+        mViewPagerBinding.loadingBar.setVisibility(View.VISIBLE);
+        mViewModel.fetchItems(categoryItem.getId());
+                mViewModel.getItemsLive().observe(MainActivity.this, new Observer<List<Item>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Item> items) {
+                        Log.i(TAG, "Items loaded: " + items);
+                        Log.e(TAG, "Before transaction back stack count: " + getSupportFragmentManager().getBackStackEntryCount());
+                        mViewPagerBinding.loadingBar.setVisibility(View.GONE);
+                        ItemListFragment itemListFragment = ItemListFragment.newInstance(items);
+                        getSupportFragmentManager().beginTransaction()
+                            .add(mViewPagerBinding.fragmentContainer.getId(), itemListFragment)
+                            .addToBackStack(null)
+                            .commit();
+                        Log.e(TAG, "After transaction back stack count: " + getSupportFragmentManager().getBackStackEntryCount());
+                    }
+                });
+    }
+
+    @Override
+    public void onItemClick(Item item) {
+       Intent intent = new Intent(this, DetailActivity.class);
+       intent.putExtra(DetailActivity.EXTRA_ITEM, item);
+       startActivity(intent);
     }
 }

@@ -1,5 +1,6 @@
 package com.aadilmehraj.android.mvvmarch.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,18 +12,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.aadilmehraj.android.mvvmarch.R;
 import com.aadilmehraj.android.mvvmarch.adapter.CategoryListAdapter;
+import com.aadilmehraj.android.mvvmarch.adapter.CategoryListAdapter.OnItemClickListener;
 import com.aadilmehraj.android.mvvmarch.service.model.Category;
 import com.aadilmehraj.android.mvvmarch.service.model.CategoryItem;
 
-public class CategoryListFragment extends Fragment {
+public class CategoryListFragment extends Fragment implements OnItemClickListener {
 
 
-    public static final String EXTRA_CATEGORY = "Extra categoory";
+    public interface OnCategoryClickListener {
+
+        void onCategoryClick(CategoryItem categoryItem);
+    }
+
+    public static final String EXTRA_CATEGORY = "Extra category";
 
     RecyclerView mRecyclerView;
     private CategoryListAdapter adapter;
-    CategoryItem category;
-
+    private CategoryItem category;
+    private OnCategoryClickListener mCategoryClickListener;
 
     public CategoryListFragment() {
 
@@ -37,6 +44,17 @@ public class CategoryListFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCategoryClickListener = (OnCategoryClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(
+                "Activity must implement OnCategoryClickListener interface");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -50,11 +68,18 @@ public class CategoryListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        adapter = new CategoryListAdapter(getContext());
+        adapter = new CategoryListAdapter(getContext(), this);
         adapter.setCategories(category);
         mRecyclerView.setAdapter(adapter);
 
         return view;
 
     }
+
+    @Override
+    public void onItemClick(CategoryItem categoryItem) {
+        mCategoryClickListener.onCategoryClick(categoryItem);
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.paging.wahdat.androidpaginglibrary.Modal;
+package com.aadilmehraj.android.mvvmarch.model;
 
 import java.util.List;
 

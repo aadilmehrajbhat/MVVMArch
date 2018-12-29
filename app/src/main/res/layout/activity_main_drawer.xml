@@ -3,18 +3,22 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
-  <android.support.design.widget.CoordinatorLayout
+  <android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
-    app:statusBarBackground="@color/colorPrimaryDark"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true">
 
+    <android.support.design.widget.CoordinatorLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
 
       <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
-        android:fitsSystemWindows="false"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false">
 
         <android.support.v7.widget.Toolbar
           android:id="@+id/main_toolbar"
@@ -27,26 +31,28 @@
 
       <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="?android:attr/actionBarSize"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <FrameLayout
+          android:id="@+id/fragment_place_holder"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
       </android.support.constraint.ConstraintLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
-<android.support.v4.widget.DrawerLayout
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:id="@+id/drawer_layout"
-  android:fitsSystemWindows="true"
-  android:layout_marginTop="?android:attr/actionBarSize"
-  android:layout_gravity="start">
     <android.support.design.widget.NavigationView
       android:id="@+id/nav_view"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
+      android:layout_marginTop="?android:attr/actionBarSize"
       android:layout_gravity="start"
       android:fitsSystemWindows="false"
-      android:layout_marginTop="?android:attr/actionBarSize"
       app:headerLayout="@null"
       app:menu="@null">
 
@@ -59,7 +65,5 @@
         android:groupIndicator="@null" />
 
     </android.support.design.widget.NavigationView>
-</android.support.v4.widget.DrawerLayout>
-
-  </android.support.design.widget.CoordinatorLayout>
+  </android.support.v4.widget.DrawerLayout>
 </layout>

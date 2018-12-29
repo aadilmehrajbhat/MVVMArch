@@ -8,6 +8,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements OnCategoryClickLi
         mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
         mViewModel.setCategoryList(categories);
 
-
         if (PreferenceUtils.isDrawerLayout(this)) {
             mDrawerBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_drawer);
             setSupportActionBar(mDrawerBinding.mainToolbar);
@@ -88,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements OnCategoryClickLi
             setSupportActionBar(mViewPagerBinding.mainToolbar);
             setUpTabLayout();
         }
-
-
 
 //        mRecyclerView = findViewById(R.id.recyclerView);
 //        mLoadingBar = findViewById(R.id.loading_bar);
@@ -126,22 +125,22 @@ public class MainActivity extends AppCompatActivity implements OnCategoryClickLi
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                     int childPosition, final long id) {
-//                CategoryItem mCategory = (CategoryItem) parent.getExpandableListAdapter()
-//                    .getChild(groupPosition, childPosition);
-//                Toast.makeText(getApplicationContext(), mCategory.getTitle(), Toast.LENGTH_SHORT)
-//                    .show();
-//                mLoadingBar.setVisibility(View.VISIBLE);
-//                drawerLayout.closeDrawer(Gravity.START);
-//                adapter.setData(null);
-//                mViewModel.fetchItems(mCategory.getId());
-//                mViewModel.getItemsLive().observe(MainActivity.this, new Observer<List<Item>>() {
-//                    @Override
-//                    public void onChanged(@Nullable List<Item> items) {
-//                        Log.i(TAG, "Items loaded: " + items);
-//                        mLoadingBar.setVisibility(View.GONE);
-//                        adapter.setData(items);
-//                    }
-//                });
+                    CategoryItem categoryItem = (CategoryItem) parent.getExpandableListAdapter()
+                        .getChild(groupPosition, childPosition);
+                    Toast.makeText(getApplicationContext(), categoryItem.getId(),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                    mDrawerBinding.drawerLayout.closeDrawer(Gravity.START);
+
+                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                    ItemListFragment itemListFragment = ItemListFragment
+                        .newInstance(categoryItem.getId());
+                    getSupportFragmentManager().beginTransaction()
+                        .replace(mDrawerBinding.fragmentPlaceHolder.getId(), itemListFragment)
+                        .addToBackStack("")
+                        .commit();
+
 
                     return true;
                 }
@@ -221,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnCategoryClickLi
         }
 
         Log.e(TAG, "After onBackPressed: " + getSupportFragmentManager().getBackStackEntryCount());
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0 && mViewPagerBinding != null) {
             showViewPager();
         }
 
@@ -238,26 +237,14 @@ public class MainActivity extends AppCompatActivity implements OnCategoryClickLi
     public void onCategoryClick(CategoryItem categoryItem) {
         mViewPagerBinding.categoryViewPager.setVisibility(View.GONE);
         mViewPagerBinding.tabLayout.setVisibility(View.GONE);
-        mViewPagerBinding.loadingBar.setVisibility(View.VISIBLE);
-        mViewModel.fetchItems(categoryItem.getId());
-        mViewModel.getItemsLive().observe(MainActivity.this, new Observer<List<Item>>() {
-            @Override
-            public void onChanged(@Nullable List<Item> items) {
-                mViewModel.getItemsLive().removeObserver(this);
-                Log.i(TAG, "Items loaded: " + items);
-                Log.e(TAG, "getItems called");
-                mViewPagerBinding.loadingBar.setVisibility(View.GONE);
-                ItemListFragment itemListFragment = ItemListFragment.newInstance(items);
 
-                fragmentId = "frag_" + items.get(0).getCategoryId();
-                getSupportFragmentManager().beginTransaction()
-                    .replace(mViewPagerBinding.fragmentContainer.getId(), itemListFragment)
-                    .addToBackStack("")
-                    .commit();
-                Log.e(TAG, "After transaction back stack count: " + getSupportFragmentManager()
-                    .getBackStackEntryCount());
-            }
-        });
+        ItemListFragment itemListFragment = ItemListFragment.newInstance(categoryItem.getId());
+        getSupportFragmentManager().beginTransaction()
+            .replace(mViewPagerBinding.fragmentContainer.getId(), itemListFragment)
+            .addToBackStack("")
+            .commit();
+
+
     }
 
     @Override
@@ -296,6 +283,14 @@ public class MainActivity extends AppCompatActivity implements OnCategoryClickLi
         } else {
             PreferenceUtils.setDrawerLayout(this, true);
             Toast.makeText(this, "Changed to DrawerLayout layout", Toast.LENGTH_SHORT).show();
+        }
+        recreateActivity();
+    }
+
+
+    private void recreateActivity() {
+        while (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
         }
         recreate();
     }

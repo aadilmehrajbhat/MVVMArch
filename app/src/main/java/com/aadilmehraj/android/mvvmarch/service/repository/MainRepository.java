@@ -94,7 +94,6 @@ public class MainRepository {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 ArrayList<Item> items = new ArrayList<>();
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Item item = snapshot.getValue(Item.class);
                     items.add(item);

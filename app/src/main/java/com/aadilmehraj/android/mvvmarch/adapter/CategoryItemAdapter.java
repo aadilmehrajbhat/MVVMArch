@@ -21,12 +21,13 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<ItemAdapterViewHol
     private List<Item> mItems;
 
     public interface OnItemClickListener {
+
         void onItemClick(Item item);
     }
 
     public CategoryItemAdapter(Context context, OnItemClickListener onItemClickListener) {
         mContext = context;
-        mClickListener =onItemClickListener;
+        mClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -38,7 +39,8 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<ItemAdapterViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemAdapterViewHolder itemAdapterViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ItemAdapterViewHolder itemAdapterViewHolder,
+        int position) {
         itemAdapterViewHolder.bind(mItems.get(position));
     }
 

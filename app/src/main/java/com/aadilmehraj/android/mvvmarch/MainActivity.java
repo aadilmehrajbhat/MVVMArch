@@ -1,16 +1,10 @@
 package com.aadilmehraj.android.mvvmarch;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.aadilmehraj.android.mvvmarch.model.StackApiResponse;
-
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                  stackApiResponse = response.body();
                 adapter = new Adapter(getApplicationContext());
                 recyclerView.setAdapter(adapter);
-                adapter.setData(stackApiResponse);
+                adapter.setData(stackApiResponse.items);
             }
 
             @Override
